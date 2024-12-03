@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wecareapps/pages/appointment_form.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -22,7 +23,10 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  // Add action here
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AppointmentFormPage()));
                 },
                 child: Container(
                   width: 350,

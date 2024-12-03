@@ -81,7 +81,7 @@ class EventPage extends StatelessWidget {
                       // Add action here
                     },
                     child: Container(
-                      height: 150,
+                      height: MediaQuery.of(context).size.height * 0.15,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black, width: 1.0),
                         borderRadius: BorderRadius.circular(16),
