@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:wecareapps/splash_screen_2.dart';
+import 'package:wecareapps/pages/splash_screen_2.dart';
 
 class SplashScreen1 extends StatefulWidget {
   const SplashScreen1({super.key});

@@ -1,199 +1,181 @@
 import 'package:flutter/material.dart';
-import 'package:wecareapps/pages/receipt.dart';
+import 'package:provider/provider.dart';
+import 'package:wecareapps/providers/form_state_provider.dart';
 
-class AppointmentFormPage extends StatefulWidget {
+class AppointmentForm extends StatefulWidget {
   @override
-  _AppointmentFormPageState createState() => _AppointmentFormPageState();
+  _AppointmentFormState createState() => _AppointmentFormState();
 }
 
-class _AppointmentFormPageState extends State<AppointmentFormPage> {
-  DateTime? _selectedDate; // Holds the selected date
-  String? _selectedTime; // Holds the selected time slot
-  TextEditingController _parentNameController = TextEditingController();
-  TextEditingController _childNameController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+class _AppointmentFormState extends State<AppointmentForm> {
+  final _parentNameController = TextEditingController();
+  final _childNameController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
-  // Function to show the date picker
-  Future<void> _pickDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate; // Update the selected date
-      });
-    }
-  }
-
-  // Function to handle form submission and navigate to ReceiptScreen
-  void _submitForm(BuildContext context) {
-    if (_selectedDate != null && _selectedTime != null) {
-      // Navigate to ReceiptScreen with selected date, time, and form details
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ReceiptScreen(
-            date: _selectedDate!,
-            time: _selectedTime!,
-            parentName: _parentNameController.text,
-            childName: _childNameController.text,
-            description: _descriptionController.text,
-          ),
-        ),
-      );
-    } else {
-      // Show a message if the form is incomplete
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select date and time')),
-      );
-    }
-  }
+  DateTime? _selectedDate;
+  String _selectedSlot = '';
+  String _selectedTime = '';
 
   @override
   Widget build(BuildContext context) {
+    final formState = Provider.of<FormStateProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appointment Form'),
+        title: Text('Buat Jadwal'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Calendar Selection Row with Border
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(8),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date Picker
+            TextField(
+              controller: TextEditingController(
+                  text: _selectedDate != null
+                      ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                      : ''),
+              decoration: InputDecoration(
+                labelText: '',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () => _pickDate(context),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _selectedDate == null
-                          ? 'Pilih Tanggal'
-                          : ' ${_selectedDate!.toLocal().toString().split(' ')[0]}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.calendar_today,
-                        size: 32,
-                        color: Colors.greenAccent,
+                hintText: 'Pilih tanggal',
+                border: OutlineInputBorder(),
+              ),
+              readOnly: true,
+            ),
+            SizedBox(height: 16),
+            // Parent Name Field
+            TextField(
+              controller: _parentNameController,
+              decoration: InputDecoration(
+                labelText: 'Nama orang tua/wali',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Child Name Field
+            TextField(
+              controller: _childNameController,
+              decoration: InputDecoration(
+                labelText: 'Nama anak',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Time Slot Selector
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildSlotButton('Pagi'),
+                _buildSlotButton('Sore'),
+              ],
+            ),
+            SizedBox(height: 16),
+            // Time Range Selector
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildTimeButton('09:00 - 10:00'),
+                _buildTimeButton('10:00 - 11:00'),
+              ],
+            ),
+            SizedBox(height: 16),
+            // Description Field
+            TextField(
+              controller: _descriptionController,
+              maxLines: 4,
+              decoration: InputDecoration(
+                labelText: 'Keluhan secara singkat',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Submit Button
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.greenAccent,
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  if (_parentNameController.text.isEmpty ||
+                      _childNameController.text.isEmpty ||
+                      _selectedSlot.isEmpty ||
+                      _selectedTime.isEmpty ||
+                      _descriptionController.text.isEmpty ||
+                      _selectedDate == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Harap lengkapi semua bidang!'),
                       ),
-                      onPressed: () => _pickDate(context),
-                    ),
-                  ],
-                ),
+                    );
+                    return;
+                  }
+                  formState.addForm(
+                    parentName: _parentNameController.text,
+                    childName: _childNameController.text,
+                    selectedDate: _selectedDate!,
+                    selectedTime: _selectedTime,
+                    description: _descriptionController.text,
+                  );
+                  Navigator.pop(context);
+                },
+                child: Text('Buat jadwal'),
               ),
-              SizedBox(height: 20),
-              // Parent Name Field
-              _buildTextField('Nama Orang Tua/Wali', _parentNameController),
-              SizedBox(height: 20),
-              // Child Name Field
-              _buildTextField('Nama Anak', _childNameController),
-              SizedBox(height: 20),
-              // Time Selection Buttons
-              Text(
-                'Pilih Waktu:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildTimeButton('Pagi', '10:00 - 11:00'),
-                    _buildTimeButton('Sore', '16:00 - 17:00'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              // Description Field
-              _buildLargeTextField('Description', _descriptionController),
-              SizedBox(height: 30),
-              // Submit Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    _submitForm(context); // Submit form action
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.greenAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  ),
-                  child: Text(
-                    'Buat Jadwal',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // Reusable Time Button Widget
-  Widget _buildTimeButton(String label, String time) {
+  Widget _buildSlotButton(String slot) {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor:
+            _selectedSlot == slot ? Colors.greenAccent : Colors.grey[300],
+      ),
       onPressed: () {
         setState(() {
-          _selectedTime = time; // Update the selected time slot
+          _selectedSlot = slot;
         });
       },
+      child: Text(slot),
+    );
+  }
+
+  Widget _buildTimeButton(String time) {
+    return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _selectedTime == time
-            ? Colors.greenAccent // Highlight selected button
-            : Colors.grey.shade300, // Default button color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        backgroundColor:
+            _selectedTime == time ? Colors.greenAccent : Colors.grey[300],
       ),
-      child: Text(
-        '$label\n$time',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: _selectedTime == time ? Colors.black : Colors.grey.shade800,
-        ),
-      ),
+      onPressed: () {
+        setState(() {
+          _selectedTime = time;
+        });
+      },
+      child: Text(time),
     );
   }
 
-  // Reusable Text Field Widget
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
-      ),
+  Future<void> _pickDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
-  }
-
-  // Reusable Large Text Field Widget for Description
-  Widget _buildLargeTextField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      maxLines: 10,
-      textAlign: TextAlign.start,
-      decoration: InputDecoration(
-        hintText: label,
-        border: OutlineInputBorder(),
-      ),
-    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
   }
 }
