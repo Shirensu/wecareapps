@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wecareapps/pages/receipt.dart';
 
 class AppointmentFormPage extends StatefulWidget {
   @override
@@ -8,6 +9,9 @@ class AppointmentFormPage extends StatefulWidget {
 class _AppointmentFormPageState extends State<AppointmentFormPage> {
   DateTime? _selectedDate; // Holds the selected date
   String? _selectedTime; // Holds the selected time slot
+  TextEditingController _parentNameController = TextEditingController();
+  TextEditingController _childNameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
 
   // Function to show the date picker
   Future<void> _pickDate(BuildContext context) async {
@@ -22,6 +26,30 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
       setState(() {
         _selectedDate = pickedDate; // Update the selected date
       });
+    }
+  }
+
+  // Function to handle form submission and navigate to ReceiptScreen
+  void _submitForm(BuildContext context) {
+    if (_selectedDate != null && _selectedTime != null) {
+      // Navigate to ReceiptScreen with selected date, time, and form details
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReceiptScreen(
+            date: _selectedDate!,
+            time: _selectedTime!,
+            parentName: _parentNameController.text,
+            childName: _childNameController.text,
+            description: _descriptionController.text,
+          ),
+        ),
+      );
+    } else {
+      // Show a message if the form is incomplete
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select date and time')),
+      );
     }
   }
 
@@ -68,10 +96,10 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
               ),
               SizedBox(height: 20),
               // Parent Name Field
-              _buildTextField('Nama Orang Tua/Wali'),
+              _buildTextField('Nama Orang Tua/Wali', _parentNameController),
               SizedBox(height: 20),
               // Child Name Field
-              _buildTextField('Nama Anak'),
+              _buildTextField('Nama Anak', _childNameController),
               SizedBox(height: 20),
               // Time Selection Buttons
               Text(
@@ -91,14 +119,13 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
               ),
               SizedBox(height: 20),
               // Description Field
-              _buildLargeTextField('Description'),
+              _buildLargeTextField('Description', _descriptionController),
               SizedBox(height: 30),
               // Submit Button
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Submit form action
-                    print("Appointment Submitted: Time: $_selectedTime");
+                    _submitForm(context); // Submit form action
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.greenAccent,
@@ -108,7 +135,7 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   ),
                   child: Text(
-                    'Submit',
+                    'Buat Jadwal',
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),
@@ -147,8 +174,9 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
   }
 
   // Reusable Text Field Widget
-  Widget _buildTextField(String label) {
+  Widget _buildTextField(String label, TextEditingController controller) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(),
@@ -157,8 +185,9 @@ class _AppointmentFormPageState extends State<AppointmentFormPage> {
   }
 
   // Reusable Large Text Field Widget for Description
-  Widget _buildLargeTextField(String label) {
+  Widget _buildLargeTextField(String label, TextEditingController controller) {
     return TextField(
+      controller: controller,
       maxLines: 10,
       textAlign: TextAlign.start,
       decoration: InputDecoration(

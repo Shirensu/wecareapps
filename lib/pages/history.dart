@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -24,31 +20,58 @@ class HistoryPage extends StatelessWidget {
             SizedBox(height: 16),
             ActivityLogCard(
               title: "Psi. Hanif Reyhan Aziz",
-              description: "deskripsi",
+              description: "Deskripsi observasi Hanif",
+              tanggal: "10 Desember 2024",
+              tujuan: "Memulai",
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DetailPage()),
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(
+                      title: "Psi. Hanif Reyhan Aziz",
+                      description: "Deskripsi observasi Hanif",
+                      tanggal: "10 Desember 2024",
+                      tujuan: "Memulai",
+                    ),
+                  ),
                 );
               },
             ),
             ActivityLogCard(
               title: "Psi. Herlita",
-              description: "deskripsi",
+              description: "Deskripsi observasi Herlita",
+              tanggal: "10 Desember 2024",
+              tujuan: "Memulai",
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DetailPage()),
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(
+                      title: "Psi. Herlita",
+                      description: "Deskripsi observasi Herlita",
+                      tanggal: "10 Desember 2024",
+                      tujuan: "Memulai",
+                    ),
+                  ),
                 );
               },
             ),
             ActivityLogCard(
               title: "Psi. Azzikra Raya",
-              description: "deskripsi",
+              description: "Deskripsi observasi Azzikra",
+              tanggal: "10 Desember 2024",
+              tujuan: "Memulai",
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DetailPage()),
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(
+                      title: "Psi. Azzikra Raya",
+                      description: "Deskripsi observasi Azzikra",
+                      tanggal: "10 Desember 2024",
+                      tujuan: "Memulai",
+                    ),
+                  ),
                 );
               },
             ),
@@ -62,12 +85,16 @@ class HistoryPage extends StatelessWidget {
 class ActivityLogCard extends StatelessWidget {
   final String title;
   final String description;
+  final String tanggal;
+  final String tujuan;
   final VoidCallback onTap;
 
   const ActivityLogCard({
     Key? key,
     required this.title,
     required this.description,
+    required this.tanggal,
+    required this.tujuan,
     required this.onTap,
   }) : super(key: key);
 
@@ -116,6 +143,19 @@ class ActivityLogCard extends StatelessWidget {
 }
 
 class DetailPage extends StatelessWidget {
+  final String title;
+  final String description;
+  final String tanggal;
+  final String tujuan;
+
+  const DetailPage({
+    Key? key,
+    required this.title,
+    required this.description,
+    required this.tanggal,
+    required this.tujuan,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,7 +164,7 @@ class DetailPage extends StatelessWidget {
           "Hasil Observasi",
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.greenAccent,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -134,27 +174,50 @@ class DetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Nama :",
+              "Nama : $title", // Menampilkan nama berdasarkan data
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 8),
             Text(
-              "Tanggal Observasi :",
+              "Deskripsi : $description", // Menampilkan deskripsi berdasarkan data
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 8),
             Text(
-              "Tujuan Observasi :",
+              "Tanggal Observasi : $tanggal",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Tujuan Observasi : $tujuan",
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text("grafik"),
+              height: 200, // Set the height for the graph
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: false),
+                  titlesData: FlTitlesData(show: false),
+                  borderData: FlBorderData(
+                      show: true, border: Border.all(color: Colors.black)),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: [
+                        FlSpot(0, 1),
+                        FlSpot(1, 2),
+                        FlSpot(2, 1.5),
+                        FlSpot(3, 2),
+                        FlSpot(4, 2.5),
+                      ],
+                      isCurved: true,
+                      color: Colors.blue,
+                      barWidth: 4,
+                      belowBarData: BarAreaData(show: false),
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 20),
@@ -169,7 +232,8 @@ class DetailPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: Text("aspek"),
+                  child: Text(
+                      "Berdasarkan program yang diberikan, target yang akan dicapai adalah memfokuskan Ananda untuk bisa berinteraksi dengan teman sosialnya dari segi bertanya hingga menjawab dengan Gerakan,serta akademik Ananda yang harus ditingkatkan lagi . Kami harap program ini akan membuat perkembangan Ananda jauh lebih baik daripada sebelumnya."),
                 ),
               ),
             ),

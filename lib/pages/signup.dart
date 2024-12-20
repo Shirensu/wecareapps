@@ -11,14 +11,14 @@ class SignUpScreen extends StatelessWidget {
     final panelHeightOpen = MediaQuery.of(context).size.height * 0.8;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFA8F3EA),
+        backgroundColor: Colors.greenAccent,
         leading: BackButton(
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      backgroundColor: Color(0xFFA8F3EA), // Background color
+      backgroundColor: Colors.greenAccent, // Background color
       body: SlidingUpPanel(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
         maxHeight: panelHeightOpen,
@@ -32,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
             // Logo Image
             Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
-              child: Image.asset('assets/img/wecare_logo.png',
+              child: Image.asset('assets/img/wecare_login.png',
                   height: 500.0), // Replace with your logo asset
             ),
           ],

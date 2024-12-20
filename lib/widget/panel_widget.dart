@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wecareapps/pages/home.dart';
+import 'package:wecareapps/pages/login.dart';
 import 'package:wecareapps/pages/signup.dart';
 
 class PanelWidget extends StatelessWidget {
@@ -76,10 +78,8 @@ class PanelWidget extends StatelessWidget {
               ),
               onPressed: () {
                 // Login Action
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignUpScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
               },
               child: Text('Login'),
             ),
@@ -183,7 +183,7 @@ class PanelWidgetSignUp extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SignUpScreen()));
+                        builder: (context) => const LoginScreen()));
               },
               child: Text('Sign Up'),
             ),
@@ -193,9 +193,9 @@ class PanelWidgetSignUp extends StatelessWidget {
               onPressed: () {
                 // Navigate to SignUpScreen
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+                    context, MaterialPageRoute(builder: (_) => LoginScreen()));
               },
-              child: Text('Sign Up'),
+              child: Text('Have an Account?'),
             ),
           ],
         ),
