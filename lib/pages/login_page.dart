@@ -12,7 +12,7 @@ class LoginScreen extends StatelessWidget {
     final panelHeightOpen = MediaQuery.of(context).size.height * 0.8;
 
     return Scaffold(
-      backgroundColor: Color(0xFFA8F3EA), // Background color
+      backgroundColor: Colors.greenAccent, // Background color
       body: SlidingUpPanel(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
         maxHeight: panelHeightOpen,

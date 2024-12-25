@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wecareapps/pages/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final String name = "WeCare";
@@ -45,6 +46,23 @@ class ProfilePage extends StatelessWidget {
               ),
               child: Text('Change password',
                   style: TextStyle(color: Colors.black)),
+            ),
+            SizedBox(height: 20),
+            // Tombol Log Out
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Log Out', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

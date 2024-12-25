@@ -69,7 +69,7 @@ class PanelWidget extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFA8F3EA),
+                backgroundColor: Colors.greenAccent,
                 foregroundColor: Colors.black,
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(

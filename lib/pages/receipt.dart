@@ -17,7 +17,7 @@ class ReceiptScreen extends StatelessWidget {
   }) : super(key: key);
 
   void _handlePayment(BuildContext context) {
-    // Show a success popup and pass data back to HomeScreen
+    // Show a success popup and redirect to HomePage
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -29,13 +29,8 @@ class ReceiptScreen extends StatelessWidget {
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close the ReceiptScreen
-                Navigator.of(context).pop({
-                  'date': date.toLocal().toString().split(' ')[0],
-                  'time': time,
-                  'childName': childName,
-                  'description': description,
-                }); // Pass data back to HomeScreen
+                Navigator.of(context).pop(); // Close ReceiptScreen
+                Navigator.of(context).pop(); // Return to HomePage
               },
             ),
           ],
@@ -51,11 +46,10 @@ class ReceiptScreen extends StatelessWidget {
         title: const Text('Receipt'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(16.0),
@@ -121,16 +115,18 @@ class ReceiptScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreenAccent,
-              ),
-              onPressed: () {
-                _handlePayment(context);
-              },
-              child: const Text(
-                'Bayar jadwal',
-                style: TextStyle(color: Colors.black),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreenAccent,
+                ),
+                onPressed: () {
+                  _handlePayment(context);
+                },
+                child: const Text(
+                  'Bayar jadwal',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ),
           ],
