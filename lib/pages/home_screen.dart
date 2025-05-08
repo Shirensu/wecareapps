@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wecareapps/providers/form_state_provider.dart'
-    hide AppointmentForm;
-import 'package:wecareapps/pages/appointment_form.dart'; // Import AppointmentForm from the correct file
+import 'package:wecareapps/pages/form_details.dart';
+import 'package:wecareapps/providers/form_state_provider.dart';
+import 'package:wecareapps/pages/appointment_form.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final formState = Provider.of<FormStateProvider>(context);
 
     return Scaffold(
       body: formState.forms.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'No appointments yet.',
                 style: TextStyle(fontSize: 16),
@@ -22,56 +24,51 @@ class HomeScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final form = formState.forms[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
                     title: Text(form.childName),
                     subtitle: Text(
                         '${form.selectedDate.toLocal().toString().split(' ')[0]} - ${form.selectedTime}'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        formState.deleteForm(index);
-                      },
-                    ),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text('Appointment Details'),
-                          content: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Parent Name: ${form.parentName}'),
-                                Text('Child Name: ${form.childName}'),
-                                Text(
-                                    'Date: ${form.selectedDate.toLocal().toString().split(' ')[0]}'),
-                                Text('Time: ${form.selectedTime}'),
-                                Text('Description: ${form.description}'),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Close'),
-                            ),
-                          ],
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.info, color: Colors.blue),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FormDetailsPage(
+                                  parentName: form.parentName,
+                                  childName: form.childName,
+                                  selectedDate: form.selectedDate,
+                                  selectedTime: form.selectedTime,
+                                  description: form.description,
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            formState.deleteForm(index);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.greenAccent,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => AppointmentForm()),
+            MaterialPageRoute(builder: (_) => const AppointmentForm()),
           );
         },
       ),

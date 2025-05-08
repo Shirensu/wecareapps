@@ -16,121 +16,84 @@ class ReceiptScreen extends StatelessWidget {
     required this.description,
   }) : super(key: key);
 
-  void _handlePayment(BuildContext context) {
-    // Show a success popup and redirect to HomePage
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Payment Successful'),
-          content: const Text('Your payment has been successfully processed.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close ReceiptScreen
-                Navigator.of(context).pop(); // Return to HomePage
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Receipt'),
+        title: const Text('Appointment Receipt'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 32.0),
-                      decoration: BoxDecoration(
-                        color: Colors.lightGreenAccent,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: const Text(
-                        'RESI',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text('DATE: ${date.toLocal().toString().split(' ')[0]}'),
-                  const SizedBox(height: 8.0),
-                  Text('BOOKING TIME: $time'),
-                  const SizedBox(height: 16.0),
-                  Text('Nama Orang Tua/Wali: $parentName'),
-                  const SizedBox(height: 8.0),
-                  Text('Nama Anak: $childName'),
-                  const SizedBox(height: 16.0),
-                  Text('Description: $description'),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'PAYMENT DETAIL',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text('Consultation'),
-                      Text('\Rp.10.000'),
-                    ],
-                  ),
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 1,
-                    endIndent: 8,
-                    indent: 8,
-                    height: 16.0,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: const Text(
-                      '\Rp.10.000',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+            const Center(
+              child: Text(
+                'Appointment Confirmed!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            const SizedBox(height: 24.0),
-            Center(
+            const SizedBox(height: 24),
+            _buildReceiptItem('Date', date.toLocal().toString().split(' ')[0]),
+            _buildReceiptItem('Time', time),
+            _buildReceiptItem('Parent Name', parentName),
+            _buildReceiptItem('Child Name', childName),
+            _buildReceiptItem('Description', description),
+            const SizedBox(height: 24),
+            const Center(
+              child: Text(
+                'Thank you for choosing WeCare!',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightGreenAccent,
-                ),
                 onPressed: () {
-                  _handlePayment(context);
+                  Navigator.popUntil(context, (route) => route.isFirst);
                 },
-                child: const Text(
-                  'Bayar jadwal',
-                  style: TextStyle(color: Colors.black),
-                ),
+                child: const Text('Back to Home'),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildReceiptItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

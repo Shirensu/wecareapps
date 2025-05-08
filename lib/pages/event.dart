@@ -12,12 +12,12 @@ class _EventPageState extends State<EventPage> {
   // List of images and descriptions
   final List<Map<String, String>> educationItems = [
     {
-      "image": "assets/img/Events.png", // Replace with your image path
-      "description": "Seminar Hybrid Mental Health Awareness Pada Mahasiswa"
+      "image": "assets/img/buku.jpg", // Replace with your image path
+      "description": "Pendidikan Dan Bimbingan Anak Berkebutuhan Khusus"
     },
     {
-      "image": "assets/img/Events.png", // Replace with your image path
-      "description": "Understanding Mental Health in Students"
+      "image": "assets/img/buku2.jpg", // Replace with your image path
+      "description": "Anak Berkebutuhan Khusus, Lancar Membaca dan Menulis"
     },
   ];
 

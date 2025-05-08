@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wecareapps/widget/panel_widget.dart';
+import 'package:wecareapps/widget/panel_widget_signup.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -10,14 +11,6 @@ class SignUpScreen extends StatelessWidget {
     final panelHeightClosed = MediaQuery.of(context).size.height * 0.05;
     final panelHeightOpen = MediaQuery.of(context).size.height * 0.8;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
-        leading: BackButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       backgroundColor: Colors.greenAccent, // Background color
       body: SlidingUpPanel(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),

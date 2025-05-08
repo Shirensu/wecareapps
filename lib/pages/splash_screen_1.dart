@@ -1,47 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:wecareapps/pages/splash_screen_2.dart';
+import 'package:wecareapps/pages/login.dart'; // Replace with your login page file.
 
-class SplashScreen1 extends StatefulWidget {
-  const SplashScreen1({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  _SplashScreen1State createState() => _SplashScreen1State();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreen1State extends State<SplashScreen1> {
+class _SplashScreenState extends State<SplashScreen> {
+  bool _showLogo = true;
+
   @override
   void initState() {
     super.initState();
+    _startSplashScreenTimer();
+  }
 
-    // Navigate to SplashScreen2 after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        PageTransition(
-          type: PageTransitionType.leftToRight, // Transition type
-          child: SplashScreen2(), // The next screen
-          duration: const Duration(milliseconds: 800), // Transition duration
-        ),
-      );
+  _startSplashScreenTimer() async {
+    await Future.delayed(Duration(seconds: 3));
+    setState(() {
+      _showLogo = false;
     });
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.pushReplacement(
+      context,
+      PageTransition(
+        type: PageTransitionType.fade,
+        child: const LoginScreen(),
+        duration: const Duration(milliseconds: 800),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          width: 500,
-          height: 1000,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.blue, width: 2),
-          ),
-          child: Image.asset(
-            'assets/img/wecare_logo.png',
-            fit: BoxFit.contain,
+      body: AnimatedContainer(
+        duration: Duration(seconds: 1),
+        color: _showLogo ? Colors.white : Colors.greenAccent,
+        child: Center(
+          child: AnimatedOpacity(
+            opacity: _showLogo ? 1.0 : 0.0,
+            duration: Duration(seconds: 1),
+            child: _showLogo
+                ? Image.asset('assets/img/wecare_login.png',
+                    fit: BoxFit.contain)
+                : Text(
+                    'Welcome',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),

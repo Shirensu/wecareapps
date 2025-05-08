@@ -4,6 +4,8 @@ import 'package:wecareapps/pages/receipt.dart';
 import 'package:wecareapps/providers/form_state_provider.dart';
 
 class AppointmentForm extends StatefulWidget {
+  const AppointmentForm({Key? key}) : super(key: key);
+
   @override
   _AppointmentFormState createState() => _AppointmentFormState();
 }
@@ -15,6 +17,14 @@ class _AppointmentFormState extends State<AppointmentForm> {
   final _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedTime;
+
+  @override
+  void dispose() {
+    _parentNameController.dispose();
+    _childNameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   void _pickDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -41,18 +51,17 @@ class _AppointmentFormState extends State<AppointmentForm> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
             children: [
               TextFormField(
                 controller: _parentNameController,
-                decoration: const InputDecoration(labelText: 'Parent Name'),
+                decoration: const InputDecoration(labelText: 'Nama Orang Tua'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Required' : null,
               ),
               TextFormField(
                 controller: _childNameController,
-                decoration: const InputDecoration(labelText: 'Child Name'),
+                decoration: const InputDecoration(labelText: 'Nama Anak'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Required' : null,
               ),
@@ -63,7 +72,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
                     child: ElevatedButton.icon(
                       onPressed: () => _pickDate(context),
                       icon: const Icon(Icons.calendar_today),
-                      label: const Text('Pick a Date'),
+                      label: const Text('Pilih Tanggal'),
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -92,7 +101,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Deskripsi',
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,

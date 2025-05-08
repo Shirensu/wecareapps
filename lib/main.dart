@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WeCareApps',
       theme: ThemeData(primarySwatch: Colors.green),
-      home: SplashScreen1(), // Starts with SplashScreen1
+      home: SplashScreen(), // Starts with SplashScreen1
     );
   }
 }

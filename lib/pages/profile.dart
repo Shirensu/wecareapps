@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wecareapps/pages/login_page.dart';
+import 'package:wecareapps/pages/login.dart';
 
 class ProfilePage extends StatelessWidget {
   final String name = "WeCare";

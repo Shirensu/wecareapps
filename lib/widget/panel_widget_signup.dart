@@ -1,56 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:wecareapps/pages/home.dart';
 import 'package:wecareapps/pages/login.dart';
-import 'package:wecareapps/pages/signup.dart';
 import 'package:wecareapps/services/api_service.dart';
-import 'package:provider/provider.dart';
-import 'package:wecareapps/providers/form_state_provider.dart';
 
-class PanelWidget extends StatefulWidget {
+class PanelWidgetSignUp extends StatefulWidget {
   final ScrollController controller;
 
-  const PanelWidget({Key? key, required this.controller}) : super(key: key);
+  const PanelWidgetSignUp({Key? key, required this.controller})
+      : super(key: key);
 
   @override
-  _PanelWidgetState createState() => _PanelWidgetState();
+  _PanelWidgetSignUpState createState() => _PanelWidgetSignUpState();
 }
 
-class _PanelWidgetState extends State<PanelWidget> {
+class _PanelWidgetSignUpState extends State<PanelWidgetSignUp> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
   String? _errorMessage;
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _register() async {
+    // Validate passwords match
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        _errorMessage = 'Passwords do not match';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      final response = await _apiService.login(
+      final response = await _apiService.register(
+        _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text,
       );
 
       if (response['ResponseCode'] == 200) {
-        // Login successful, navigate to home
+        // Registration successful, navigate to login
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful! Please login.')),
+        );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       } else {
-        // Login failed, show error message
+        // Registration failed, show error message
         setState(() {
-          _errorMessage = response['ResponseMessage'] ?? 'Login failed';
+          _errorMessage = response['ResponseMessage'] ?? 'Registration failed';
         });
       }
     } catch (e) {
@@ -70,12 +84,12 @@ class _PanelWidgetState extends State<PanelWidget> {
         controller: widget.controller,
         children: <Widget>[
           SizedBox(height: 36),
-          buildLoginBox(context),
+          buildSignUpBox(context),
           SizedBox(height: 24),
         ],
       );
 
-  Widget buildLoginBox(BuildContext context) => Container(
+  Widget buildSignUpBox(BuildContext context) => Container(
         padding: EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +98,7 @@ class _PanelWidgetState extends State<PanelWidget> {
             SizedBox(height: 18),
             Center(
               child: Text(
-                'Login',
+                'Sign Up',
                 style: TextStyle(fontSize: 36.0),
               ),
             ),
@@ -97,6 +111,16 @@ class _PanelWidgetState extends State<PanelWidget> {
                 ),
               ),
             SizedBox(height: 12),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+            ),
+            SizedBox(height: 18),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -118,41 +142,39 @@ class _PanelWidgetState extends State<PanelWidget> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () {
-                  // Forgot Password Action
-                },
-                child: Text(
-                  'Forgot password?',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(height: 18),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Confirmation Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: Color(0xFFA8F3EA),
                 foregroundColor: Colors.black,
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
               ),
-              onPressed: _isLoading ? null : _login,
+              onPressed: _isLoading ? null : _register,
               child: _isLoading
                   ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Login'),
+                  : Text('Sign Up'),
             ),
             TextButton(
               onPressed: () {
-                // Navigate to SignUpScreen
+                // Navigate to LoginScreen
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+                    context, MaterialPageRoute(builder: (_) => LoginScreen()));
               },
-              child: Text('Sign Up'),
+              child: Text('Have an Account?'),
             ),
           ],
         ),

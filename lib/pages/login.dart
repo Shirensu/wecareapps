@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wecareapps/widget/panel_widget.dart';
-//import 'package:wecareapps/pages/home.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -17,8 +16,6 @@ class LoginScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
         maxHeight: panelHeightOpen,
         minHeight: panelHeightClosed,
-        // parallaxEnabled: true,
-        // parallaxOffset: .5,
         panelBuilder: (controller) => PanelWidget(controller: controller),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -30,6 +27,19 @@ class LoginScreen extends StatelessWidget {
                   height: 500.0), // Replace with your logo asset
             ),
           ],
+        ),
+        header: Container(
+          height: 30,
+          decoration: BoxDecoration(
+            color: Colors.greenAccent,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.keyboard_arrow_up,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
